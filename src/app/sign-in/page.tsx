@@ -3,10 +3,8 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-
 import { authClient } from "../../lib/auth-client";
 
 export default function SignInPage() {
@@ -14,7 +12,6 @@ export default function SignInPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -40,9 +37,28 @@ export default function SignInPage() {
     router.refresh();
   };
 
+  const handleGoogleLogin = async () => {
+    setError("");
+
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+  };
+
+  const handleGithubLogin = async () => {
+    setError("");
+
+    await authClient.signIn.social({
+      provider: "github",
+      callbackURL: "/",
+    });
+  };
+
   return (
     <main className="min-h-screen bg-[#f3f8f3] px-4 py-10 sm:py-14">
       <div className="mx-auto max-w-md">
+
         {/* Heading */}
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
@@ -56,7 +72,9 @@ export default function SignInPage() {
 
         {/* Sign In Card */}
         <div className="mt-7 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
+
           <form onSubmit={handleSubmit} className="space-y-4">
+
             {/* Email */}
             <div>
               <label
@@ -117,17 +135,17 @@ export default function SignInPage() {
           {/* Divider */}
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-200" />
-
             <span className="text-xs text-gray-400">অথবা</span>
-
             <div className="h-px flex-1 bg-gray-200" />
           </div>
 
           {/* Social Login */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
             {/* Google */}
             <button
               type="button"
+              onClick={handleGoogleLogin}
               className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
             >
               <FcGoogle className="text-lg" />
@@ -137,11 +155,13 @@ export default function SignInPage() {
             {/* GitHub */}
             <button
               type="button"
+              onClick={handleGithubLogin}
               className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
             >
               <FaGithub className="text-lg text-gray-900" />
               <span>GitHub দিয়ে লগইন করুন</span>
             </button>
+
           </div>
 
           {/* Sign Up */}
@@ -154,6 +174,7 @@ export default function SignInPage() {
               সাইন আপ করুন
             </Link>
           </p>
+
         </div>
       </div>
     </main>

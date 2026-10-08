@@ -2,6 +2,9 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "../../../lib/auth";
 
 import { getProducts } from "../../../lib/api";
 
@@ -36,23 +39,31 @@ async function ProductDetailsContent({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  await connection();
+await connection();
+
+const session = await auth.api.getSession({
+  headers: await headers(),
+});
+
+if (!session?.user) {
+  redirect("/sign-in");
+}
 
   const { slug } = await params;
 
   const products = await getProducts();
 
-  // URL slug দিয়ে product খুঁজে বের করা
+
   const product = products.find(
     (item) => item.slug === slug
   );
 
-  // Product না পাওয়া গেলে 404
+
   if (!product) {
     notFound();
   }
 
-  // Market থেকে minimum price
+
   const minPrice = Math.min(
     ...product.markets.map((market) => market.min)
   );

@@ -3,10 +3,8 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-
 import { authClient } from "../../lib/auth-client";
 
 export default function SignUpPage() {
@@ -16,7 +14,6 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -56,9 +53,28 @@ export default function SignUpPage() {
     router.refresh();
   };
 
+  const handleGoogleSignup = async () => {
+    setError("");
+
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+  };
+
+  const handleGithubSignup = async () => {
+    setError("");
+
+    await authClient.signIn.social({
+      provider: "github",
+      callbackURL: "/",
+    });
+  };
+
   return (
     <main className="min-h-screen bg-[#f3f8f3] px-4 py-10 sm:py-14">
       <div className="mx-auto max-w-md">
+
         {/* Heading */}
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
@@ -72,7 +88,9 @@ export default function SignUpPage() {
 
         {/* Signup Card */}
         <div className="mt-7 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
+
           <form onSubmit={handleSubmit} className="space-y-4">
+
             {/* Name */}
             <div>
               <label
@@ -168,40 +186,42 @@ export default function SignUpPage() {
               disabled={loading}
               className="w-full rounded-lg bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "অ্যাকাউন্ট তৈরি হচ্ছে..." : "অ্যাকাউন্ট তৈরি করুন"}
+              {loading
+                ? "অ্যাকাউন্ট তৈরি হচ্ছে..."
+                : "অ্যাকাউন্ট তৈরি করুন"}
             </button>
           </form>
 
           {/* Divider */}
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-gray-200" />
-
             <span className="text-xs text-gray-400">অথবা</span>
-
             <div className="h-px flex-1 bg-gray-200" />
           </div>
 
           {/* Social Login Buttons */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
             {/* Google */}
             <button
               type="button"
+              onClick={handleGoogleSignup}
               className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
             >
               <FcGoogle className="text-lg" />
-
               <span>Google দিয়ে লগইন করুন</span>
             </button>
 
             {/* GitHub */}
             <button
               type="button"
+              onClick={handleGithubSignup}
               className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
             >
               <FaGithub className="text-lg text-gray-900" />
-
               <span>GitHub দিয়ে লগইন করুন</span>
             </button>
+
           </div>
 
           {/* Sign In Link */}
@@ -214,6 +234,7 @@ export default function SignUpPage() {
               সাইন ইন করুন
             </Link>
           </p>
+
         </div>
       </div>
     </main>

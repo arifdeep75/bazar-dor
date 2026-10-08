@@ -20,22 +20,17 @@ export async function getProductBySlug(
 ): Promise<Product | null> {
   const products = await getProducts();
 
-  return products.find((product) => product.slug === slug) ?? null;
+  return (
+    products.find((product) => product.slug === slug) ?? null
+  );
 }
 
 export async function getProductsByCategory(
   category: string
 ): Promise<Product[]> {
-  const response = await fetch(
-    `${BASE_URL}/products?category=${category}`,
-    {
-      cache: "force-cache",
-    }
+  const products = await getProducts();
+
+  return products.filter(
+    (product) => product.category === category
   );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch category products");
-  }
-
-  return response.json();
 }

@@ -35,7 +35,6 @@ async function CategoryPageContent({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  // Tell Next.js this part needs runtime data
   await connection();
 
   const { slug } = await params;
@@ -75,6 +74,7 @@ async function CategoryPageContent({
 
         {/* Header */}
         <div className="mb-6">
+
           {/* Breadcrumb */}
           <div className="mb-3 text-sm text-gray-500">
             <Link
@@ -126,8 +126,8 @@ async function CategoryPageContent({
                     product.change.dir === "up"
                       ? "bg-red-50 text-red-500"
                       : product.change.dir === "down"
-                      ? "bg-green-50 text-green-600"
-                      : "bg-gray-100 text-gray-500"
+                        ? "bg-green-50 text-green-600"
+                        : "bg-gray-100 text-gray-500"
                   }`}
                 >
                   {product.change.dir === "up" && "▲ "}

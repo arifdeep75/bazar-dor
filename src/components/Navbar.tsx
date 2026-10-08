@@ -1,6 +1,10 @@
-import { connection } from "next/server";
+"use client";
+
 import { Suspense } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import AuthControls from "./AuthControls";
 
 const categories = [
   { name: "চাল", icon: "🍚", slug: "chal" },
@@ -14,41 +18,14 @@ const categories = [
 ];
 
 const tickerItems = [
-  {
-    name: "স্বর্ণমাছি চাল",
-    price: 148,
-    change: "+2.1%",
-    up: true,
-  },
-  {
-    name: "মিনিকেট চাল",
-    price: 99,
-    change: "-2.9%",
-    up: false,
-  },
-  {
-    name: "বাটাম সাইজ চাল",
-    price: 88,
-    change: "+3.1%",
-    up: true,
-  },
-  {
-    name: "মসুর ডাল",
-    price: 145,
-    change: "-1.9%",
-    up: false,
-  },
-  {
-    name: "সয়াবিন তেল",
-    price: 180,
-    change: "+2.8%",
-    up: true,
-  },
+  { name: "স্বর্ণমাছি চাল", price: 148, change: "+2.1%", up: true },
+  { name: "মিনিকেট চাল", price: 99, change: "-2.9%", up: false },
+  { name: "বাটাম সাইজ চাল", price: 88, change: "+3.1%", up: true },
+  { name: "মসুর ডাল", price: 145, change: "-1.9%", up: false },
+  { name: "সয়াবিন তেল", price: 180, change: "+2.8%", up: true },
 ];
 
-async function CurrentDate() {
-  await connection();
-
+function CurrentDate() {
   const currentDate = new Intl.DateTimeFormat("bn-BD", {
     timeZone: "Asia/Dhaka",
     weekday: "long",
@@ -64,15 +41,43 @@ async function CurrentDate() {
   );
 }
 
+function CategoryLinks() {
+  const pathname = usePathname();
+
+  return (
+    <nav className="mx-auto flex max-w-6xl gap-6 overflow-x-auto px-4 py-2">
+      {categories.map((category) => {
+        const isActive =
+          pathname === `/category/${category.slug}`;
+
+        return (
+          <Link
+            key={category.slug}
+            href={`/category/${category.slug}`}
+            className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-sm ${
+              isActive
+                ? "bg-green-50 font-semibold text-green-700"
+                : "text-gray-700 hover:text-green-600"
+            }`}
+          >
+            <span>{category.icon}</span>
+            <span>{category.name}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 export default function Navbar() {
   return (
     <header className="bg-white">
-      {/* Top Row */}
+
+      {/* Top Navbar */}
       <div className="border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
 
-          {/* Logo */}
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-600 text-xl">
               🛒
             </div>
@@ -92,44 +97,30 @@ export default function Navbar() {
                 <CurrentDate />
               </Suspense>
             </div>
-          </div>
+          </Link>
 
-          {/* Auth */}
-          <div className="flex items-center gap-2">
-            <button className="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
-              সাইন ইন
-            </button>
+          <AuthControls />
 
-            <button className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700">
-              সাইন আপ
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Category Row */}
+      {/* Categories */}
       <div className="border-b">
-        <nav className="mx-auto flex max-w-6xl gap-6 overflow-x-auto px-4 py-2">
-          {categories.map((category, index) => (
-            <Link
-              key={category.slug}
-              href={`/category/${category.slug}`}
-              className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-sm ${
-                index === 0
-                  ? "bg-green-50 font-semibold text-green-700"
-                  : "text-gray-700 hover:text-green-600"
-              }`}
-            >
-              <span>{category.icon}</span>
-              <span>{category.name}</span>
-            </Link>
-          ))}
-        </nav>
+        <Suspense
+          fallback={
+            <div className="mx-auto max-w-6xl px-4 py-2 text-sm text-gray-400">
+              লোড হচ্ছে...
+            </div>
+          }
+        >
+          <CategoryLinks />
+        </Suspense>
       </div>
 
       {/* Price Ticker */}
       <div className="overflow-hidden border-b bg-gray-50">
         <div className="flex w-max animate-[marquee_25s_linear_infinite] gap-10 px-4 py-2">
+
           {[...tickerItems, ...tickerItems].map((item, index) => (
             <div
               key={`${item.name}-${index}`}
@@ -152,8 +143,10 @@ export default function Navbar() {
               </span>
             </div>
           ))}
+
         </div>
       </div>
+
     </header>
   );
 }
