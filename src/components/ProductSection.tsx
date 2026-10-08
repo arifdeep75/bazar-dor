@@ -15,7 +15,7 @@ export default function ProductSections({
   // Top 6 products whose prices decreased
   const fallers = products
     .filter((product) => product.change.dir === "down")
-    .sort((a, b) => b.change.pct - a.change.pct)
+    .sort((a, b) => a.change.pct - b.change.pct)
     .slice(0, 6);
 
   return (

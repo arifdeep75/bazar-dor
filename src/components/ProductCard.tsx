@@ -1,6 +1,19 @@
 import Link from "next/link";
 import type { Product } from "../types/product";
 
+function formatUnit(unit: string) {
+  const units: Record<string, string> = {
+    kg: "প্রতি কেজি",
+    liter: "প্রতি লিটার",
+    litre: "প্রতি লিটার",
+    dozen: "প্রতি ডজন",
+    piece: "প্রতি পিস",
+    pcs: "প্রতি পিস",
+  };
+
+  return units[unit.toLowerCase()] || `প্রতি ${unit}`;
+}
+
 function toBengaliNumber(value: number | string) {
   const bengaliDigits = "০১২৩৪৫৬৭৮৯";
 
@@ -16,6 +29,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const isUp = dir === "up";
   const isDown = dir === "down";
   const isFlat = dir === "flat";
+  
 
   return (
     <Link href={`/product/${product.slug}`}>
@@ -36,7 +50,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </h3>
 
             <p className="mt-1 text-xs text-gray-500">
-              {product.unit}
+              {formatUnit(product.unit)}
             </p>
           </div>
         </div>
