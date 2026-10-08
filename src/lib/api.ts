@@ -14,3 +14,11 @@ export async function getProducts(): Promise<Product[]> {
 
   return response.json();
 }
+
+export async function getProductBySlug(
+  slug: string
+): Promise<Product | null> {
+  const products = await getProducts();
+
+  return products.find((product) => product.slug === slug) ?? null;
+}
