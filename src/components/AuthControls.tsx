@@ -67,7 +67,7 @@ export default function AuthControls() {
               <p className="font-semibold text-gray-900">
                 {session.user.name}
               </p>
-              <p>Hello</p>
+              
 
               <p className="mt-1 truncate text-xs text-gray-500">
                 {session.user.email}

@@ -18,11 +18,11 @@ const categories = [
 ];
 
 const tickerItems = [
-  { name: "স্বর্ণমাছি চাল", price: 148, change: "+2.1%", up: true },
-  { name: "মিনিকেট চাল", price: 99, change: "-2.9%", up: false },
-  { name: "বাটাম সাইজ চাল", price: 88, change: "+3.1%", up: true },
-  { name: "মসুর ডাল", price: 145, change: "-1.9%", up: false },
-  { name: "সয়াবিন তেল", price: 180, change: "+2.8%", up: true },
+  { name: "স্বর্ণমাছি চাল", icon: "🍚", price: 148, change: "+2.1%", up: true },
+  { name: "মিনিকেট চাল", icon: "🍚", price: 99, change: "-2.9%", up: false },
+  { name: "বাটাম সাইজ চাল", icon: "🍚", price: 88, change: "+3.1%", up: true },
+  { name: "মসুর ডাল", icon: "🫘", price: 145, change: "-1.9%", up: false },
+  { name: "সয়াবিন তেল", icon: "🛢️", price: 180, change: "+2.8%", up: true },
 ];
 
 function CurrentDate() {
@@ -34,11 +34,7 @@ function CurrentDate() {
     year: "numeric",
   }).format(new Date());
 
-  return (
-    <p className="text-xs text-gray-500">
-      {currentDate}
-    </p>
-  );
+  return <p className="text-xs text-gray-500">{currentDate}</p>;
 }
 
 function CategoryLinks() {
@@ -47,8 +43,7 @@ function CategoryLinks() {
   return (
     <nav className="mx-auto flex max-w-6xl gap-6 overflow-x-auto px-4 py-2">
       {categories.map((category) => {
-        const isActive =
-          pathname === `/category/${category.slug}`;
+        const isActive = pathname === `/category/${category.slug}`;
 
         return (
           <Link
@@ -72,27 +67,19 @@ function CategoryLinks() {
 export default function Navbar() {
   return (
     <header className="bg-white">
-
       {/* Top Navbar */}
       <div className="border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-600 text-xl">
               🛒
             </div>
 
             <div>
-              <h1 className="text-xl font-bold text-gray-900">
-                বাজার দর
-              </h1>
+              <h1 className="text-xl font-bold text-gray-900">বাজার দর</h1>
 
               <Suspense
-                fallback={
-                  <p className="text-xs text-gray-500">
-                    লোড হচ্ছে...
-                  </p>
-                }
+                fallback={<p className="text-xs text-gray-500">লোড হচ্ছে...</p>}
               >
                 <CurrentDate />
               </Suspense>
@@ -100,7 +87,6 @@ export default function Navbar() {
           </Link>
 
           <AuthControls />
-
         </div>
       </div>
 
@@ -120,13 +106,12 @@ export default function Navbar() {
       {/* Price Ticker */}
       <div className="overflow-hidden border-b bg-gray-50">
         <div className="flex w-max animate-[marquee_25s_linear_infinite] gap-10 px-4 py-2">
-
           {[...tickerItems, ...tickerItems].map((item, index) => (
             <div
               key={`${item.name}-${index}`}
               className="flex shrink-0 items-center gap-2 text-sm"
             >
-              <span>🟢</span>
+              <span className="text-base">{item.icon}</span>
 
               <span className="text-gray-700">
                 {item.name} {item.price} টাকা/কেজি
@@ -143,10 +128,8 @@ export default function Navbar() {
               </span>
             </div>
           ))}
-
         </div>
       </div>
-
     </header>
   );
 }
