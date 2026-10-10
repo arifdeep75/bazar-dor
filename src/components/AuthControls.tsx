@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
 import { authClient } from "../lib/auth-client";
+
 
 export default function AuthControls() {
   const router = useRouter();
@@ -12,17 +13,27 @@ export default function AuthControls() {
 
   const { data: session, isPending } = authClient.useSession();
 
-  const handleLogout = async () => {
+const handleLogout = async () => {
+  try {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
           setOpen(false);
+          toast.success("সফলভাবে সাইন আউট হয়েছে!");
           router.push("/");
           router.refresh();
         },
+        onError: (ctx) => {
+          toast.error(
+            ctx.error.message || "সাইন আউট করা যায়নি"
+          );
+        },
       },
     });
-  };
+  } catch {
+    toast.error("সাইন আউট করার সময় সমস্যা হয়েছে");
+  }
+};
 
   if (isPending) {
     return (
