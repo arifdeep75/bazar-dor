@@ -1,4 +1,5 @@
 import { connection } from "next/server";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
 import { getProductsByCategory } from "../../../lib/api";
@@ -32,6 +33,9 @@ async function CategoryPageContent({
   const { slug } = await params;
   const { sort } = await searchParams;
   const categoryProducts = await getProductsByCategory(slug);
+  if (categoryProducts.length === 0) {
+  notFound();
+}
   const sortOption: SortOption =
     sort === "low-high" || sort === "high-low" ? sort : "default";
   const sortedProducts = [...categoryProducts];
@@ -42,6 +46,7 @@ async function CategoryPageContent({
   }
   const categoryName = categoryProducts[0]?.categoryNameBn;
   const categoryIcon = categoryProducts[0]?.categoryIcon;
+  
   if (categoryProducts.length === 0) {
     return (
       <main className="min-h-[65vh] bg-[#f0f5f0] px-4 py-12">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-
+import { Toaster } from "react-hot-toast";
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -33,6 +33,25 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <div>
           {children}          
         </div>
+       <Toaster
+  position="top-right"
+  toastOptions={{
+    duration: 3000,
+    style: {
+      background: "#ffffff",
+      color: "#1f2937",
+      border: "1px solid #e5e7eb",
+      borderRadius: "12px",
+      fontSize: "14px",
+    },
+    success: {
+      iconTheme: {
+        primary: "#07883e",
+        secondary: "#ffffff",
+      },
+    },
+  }}
+/>
         <Footers></Footers>
        </body>
     </html>

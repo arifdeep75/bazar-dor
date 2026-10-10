@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { authClient } from "../../lib/auth-client";
@@ -24,57 +25,86 @@ export default function SignUpPage() {
 
     // Check password
     if (password !== confirmPassword) {
-      setError("পাসওয়ার্ড দুটি একই নয়");
+      const message = "পাসওয়ার্ড দুটি একই নয়";
+      setError(message);
+      toast.error(message);
       return;
     }
 
     // Check password length
     if (password.length < 8) {
-      setError("পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে");
+      const message = "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে";
+      setError(message);
+      toast.error(message);
       return;
     }
 
     setLoading(true);
 
-    const { error } = await authClient.signUp.email({
-      name,
-      email,
-      password,
-      callbackURL: "/",
-    });
+    try {
+      const { error } = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        callbackURL: "/",
+      });
 
-    if (error) {
-      setError(error.message || "সাইন আপ করা যায়নি");
+      if (error) {
+        const message = error.message || "সাইন আপ করা যায়নি";
+        setError(message);
+        toast.error(message);
+        return;
+      }
+
+      toast.success("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!");
+      router.push("/");
+      router.refresh();
+    } catch {
+      const message = "সাইন আপ করা যায়নি। আবার চেষ্টা করুন।";
+      setError(message);
+      toast.error(message);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push("/");
-    router.refresh();
   };
 
   const handleGoogleSignup = async () => {
     setError("");
 
-    await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/",
-    });
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        toast.error(error.message || "Google দিয়ে লগইন করা যায়নি");
+      }
+    } catch {
+      toast.error("Google দিয়ে লগইন করা যায়নি। আবার চেষ্টা করুন।");
+    }
   };
 
   const handleGithubSignup = async () => {
     setError("");
 
-    await authClient.signIn.social({
-      provider: "github",
-      callbackURL: "/",
-    });
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "github",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        toast.error(error.message || "GitHub দিয়ে লগইন করা যায়নি");
+      }
+    } catch {
+      toast.error("GitHub দিয়ে লগইন করা যায়নি। আবার চেষ্টা করুন।");
+    }
   };
 
   return (
     <main className="min-h-screen bg-[#f3f8f3] px-4 py-10 sm:py-14">
       <div className="mx-auto max-w-md">
-
         {/* Heading */}
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
@@ -88,9 +118,7 @@ export default function SignUpPage() {
 
         {/* Signup Card */}
         <div className="mt-7 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-7">
-
           <form onSubmit={handleSubmit} className="space-y-4">
-
             {/* Name */}
             <div>
               <label
@@ -201,7 +229,6 @@ export default function SignUpPage() {
 
           {/* Social Login Buttons */}
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-
             {/* Google */}
             <button
               type="button"
@@ -221,7 +248,6 @@ export default function SignUpPage() {
               <FaGithub className="text-lg text-gray-900" />
               <span>GitHub দিয়ে লগইন করুন</span>
             </button>
-
           </div>
 
           {/* Sign In Link */}
@@ -234,7 +260,6 @@ export default function SignUpPage() {
               সাইন ইন করুন
             </Link>
           </p>
-
         </div>
       </div>
     </main>

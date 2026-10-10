@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "../../../lib/auth";
 
+
 import { getProducts } from "../../../lib/api";
 
 function formatUnit(unit: string) {
@@ -41,39 +42,37 @@ async function ProductDetailsContent({
 }) {
 await connection();
 
+const { slug } = await params;
+
+const products = await getProducts();
+
+const product = products.find(
+  (item) => item.slug === slug
+);
+
+
+if (!product) {
+  notFound();
+}
+
 const session = await auth.api.getSession({
   headers: await headers(),
 });
 
 if (!session?.user) {
-  redirect("/sign-in");
+  redirect("/sign-in?reason=auth-required");
 }
 
-  const { slug } = await params;
-
-  const products = await getProducts();
-
-
-  const product = products.find(
-    (item) => item.slug === slug
-  );
-
-
-  if (!product) {
-    notFound();
-  }
 
 
   const minPrice = Math.min(
     ...product.markets.map((market) => market.min)
   );
 
-  // Market থেকে maximum price
   const maxPrice = Math.max(
     ...product.markets.map((market) => market.max)
   );
 
-  // Market average price
   const averagePrice =
     product.markets.reduce(
       (total, market) =>
@@ -92,7 +91,6 @@ if (!session?.user) {
     <main className="min-h-screen bg-[#f3f8f3] py-8">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
 
-        {/* Breadcrumb */}
         <div className="mb-5 text-sm text-gray-500">
           <Link
             href="/"
