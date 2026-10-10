@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "../../../lib/auth";
+import ProductDetailsLoading from "./loading";
 
 
 import { getProducts } from "../../../lib/api";
@@ -373,17 +374,9 @@ export default function ProductDetailsPage({
 }) {
   return (
     <Suspense
-      fallback={
-        <main className="min-h-screen bg-[#f3f8f3] py-12">
-          <div className="mx-auto max-w-6xl px-4 text-center">
-            <p className="text-gray-500">
-              লোড হচ্ছে...
-            </p>
-          </div>
-        </main>
-      }
-    >
-      <ProductDetailsContent params={params} />
-    </Suspense>
+  fallback={<ProductDetailsLoading />}
+>
+  <ProductDetailsContent params={params} />
+</Suspense>
   );
 }
